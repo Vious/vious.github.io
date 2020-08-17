@@ -1,0 +1,252 @@
+body {
+	background-color: #eee;
+	margin: 0;
+	padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6{
+	color: #477cd1;
+}
+
+a{
+	color: #477cd1
+}
+
+h3 {
+	border-bottom: 1px solid #ccc;
+}
+
+div#news div.col-md-10{
+	padding-left: 0px;
+}
+
+div#news div.col-md-2{
+    text-align:center;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+div#news div.col-md-2 img {
+	max-width: 65%;
+}
+
+a:hover img {
+	border-bottom: 1px dotted #527bbd;
+}
+
+.hide {
+	display: none;
+}
+
+p {
+	font-size: 14.5px;
+	margin-bottom: 5px;
+}
+
+div.container {
+	background-color: #fff;
+	margin: 40px auto 10px;
+	padding: 90px 90px 20px 90px;
+}
+
+div.row {
+	margin: 8px 0;
+}
+
+p.title-position {
+	font-weight:bold;
+	font-size: 16px;
+	margin: 16px 0;
+}
+
+div.section {
+	margin: 40px 0;
+	position: relative;
+}
+
+div.row {
+	margin: 8px 0;
+}
+
+div#news p,
+div#publications p{
+    font-size: 14.5px;
+}
+
+div#publications ul{
+    font-size: 14px;
+}
+
+div#news{
+	margin: 8px 0;
+}
+
+div#news span.date {
+	color: #406bb1;
+}
+
+div#news img {
+	box-shadow: 3px 3px 6px #999;
+}
+
+div#publication-switch {
+	font-size: 16px;
+	position: absolute;
+	top: 5px;
+	right: 15px;
+}
+
+div#publication-switch a.disabled {
+	cursor: default;
+	color: #666;
+	text-decoration: none;
+}
+
+div#highlight-publication ul {
+	padding: 0;
+	list-style: none;
+}
+
+div#highlight-publication img {
+	border: 1px solid #000;
+	max-width: 100%;
+}
+
+div#head div.col-md-7{
+	padding-left: 5px;
+	padding-right: 5px;
+
+}
+
+div.col-md-7 ul.list-inline img {
+    margin-top: 10px;
+	height: 25px;
+}
+div.col-md-5 img {
+	max-width: 96%;
+}
+
+div#highlight-publication div.col-md-3,
+div#highlight-publication div.col-md-4,
+div#highlight-publication div.col-md-8,
+div#highlight-publication div.col-md-9 {
+	padding-left: 0;
+}
+
+div#full-list-publication > ul {
+	padding: 0 0 0 20px;
+}
+
+div#education div.col-10,
+div#research div.col-10,
+div#service div.col-10,
+div#award div.col-10{
+	font-size: 14.5px;
+	vertical-align: middle;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+div#education div.col-2,
+div#research div.col-2,
+div#award div.col-2{
+    font-size: 14px;
+	text-align:center;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+div#education div.col-2 img,
+div#research div.col-2 img{
+	max-width: 35%;
+}
+
+ul.list-inline img {
+	height: 30px;
+}
+
+div#copyright p {
+	font-size: 14px;
+	text-align: center;
+	margin: 20px;
+}
+
+pre {
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	display: none;
+	font-size: 12px;
+	margin: 5px 0;
+	max-width: 100%;
+	overflow: auto;
+	padding: 12px;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+}
+
+/* Smaller than standard 960 (devices and browsers) */
+@media only screen and (max-width: 959px) {
+}
+
+/* Tablet Portrait size to standard 960 (devices and browsers) */
+@media only screen and (min-width: 768px) and (max-width: 959px) {
+}
+
+/* All Mobile Sizes (devices and browser) */
+@media only screen and (max-width: 767px) {
+    div#head div.col-md-5 {
+	padding-left: 0px;
+	padding-right: 0px;
+	}
+    div#head div.col-md-5 img {
+	padding-top: 4px;
+	padding-left: 8px;
+	padding-right: 8px;
+	}
+	div#news div.col-md-2 {
+	display: none;
+	}
+	div#education div.col-2 img,
+    div#research div.col-2 img{
+	max-width: 70%;
+    }
+    div#publication-switch {
+	font-size: 18px;
+	position: absolute;
+	top: 5px;
+	right: 0px;
+    }
+    
+    div.section {
+    margin: 30px 0;
+    position: relative;
+    }
+    
+	div.container {
+		margin: 20px auto;
+		margin-bottom:12px;
+		padding: 25px;
+		padding-bottom: 18px;
+	}
+
+	div#highlight-publication div.col-md-3,
+	div#highlight-publication div.col-md-4 {
+		padding: 0 0 10px;
+	}
+
+	div#highlight-publication > ul > li {
+		border-bottom: 1px dotted #999;
+		margin-bottom: 20px;
+	}
+
+	div#highlight-publication > ul > li:last-child {
+		border-bottom: none;
+	}
+}
+
+/* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+}
+
+/* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
+@media only screen and (max-width: 479px) {
+}

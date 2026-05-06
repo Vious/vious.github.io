@@ -1,0 +1,14 @@
+[
+    {
+        "title": "Welcome to My Blog",
+        "date": "2026-05-06",
+        "tags": ["meta", "guide"],
+        "file": "posts/welcome.md"
+    },
+    {
+        "title": "Getting Started with Deep Learning",
+        "date": "2026-05-01",
+        "tags": ["AI", "Deep Learning", "tutorial"],
+        "file": "posts/deep-learning-intro.md"
+    }
+]

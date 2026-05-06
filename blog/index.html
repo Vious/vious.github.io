@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Blog - Chaohao Xie</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Icon -->
+    <link href="../icons/hiDog.jpg" rel="my icon" type="image/x-icon">
+    <!-- StyleSheets -->
+    <link rel="stylesheet" href="../source/google-fonts.min.css">
+    <link rel="stylesheet" href="../source/bootstrap.min.css">
+    <link rel="stylesheet" href="../source/style.css">
+    <!-- marked.js for Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        .blog-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 20px 20px;
+        }
+        .blog-header a {
+            color: rgba(255,255,255,0.85);
+        }
+        .blog-header a:hover {
+            color: white;
+        }
+        .tag-badge {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 0.2rem;
+            padding: 0.4em 0.8em;
+            font-size: 0.85rem;
+            border-radius: 20px;
+            border: 1px solid #667eea;
+            color: #667eea;
+            background: transparent;
+            display: inline-block;
+        }
+        .tag-badge:hover {
+            background: #667eea;
+            color: white;
+        }
+        .tag-badge.active {
+            background: #667eea;
+            color: white;
+        }
+        .tag-badge.tag-all {
+            border-color: #6c757d;
+            color: #6c757d;
+        }
+        .tag-badge.tag-all:hover,
+        .tag-badge.tag-all.active {
+            background: #6c757d;
+            color: white;
+        }
+        .post-card {
+            border: 1px solid #e8e8e8;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: box-shadow 0.3s ease, transform 0.2s ease;
+            cursor: pointer;
+        }
+        .post-card:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        .post-card.hidden {
+            display: none;
+        }
+        .post-date {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        .post-tags {
+            margin-top: 0.5rem;
+        }
+        .post-tags .tag-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 0.3rem;
+            background: #667eea;
+            vertical-align: middle;
+        }
+        .post-tags span {
+            margin-right: 0.8rem;
+            font-size: 0.85rem;
+            color: #667eea;
+        }
+        #post-content {
+            padding: 2rem;
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            min-height: 300px;
+        }
+        #post-content img {
+            max-width: 100%;
+            border-radius: 8px;
+        }
+        #post-content pre {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        #post-content blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 1rem;
+            color: #666;
+        }
+        .back-btn {
+            margin-bottom: 1rem;
+        }
+        .loading-spinner {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+        }
+        #tags-section {
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="blog-header text-center">
+            <h1>📝 Vious12138's Blog</h1>
+            <p>Thoughts, notes & ideas</p>
+            <a href="./posts/welcome.md">Just a test post →</a><br>
+        </div>
+
+        <!-- Tag Filter -->
+        <div id="tags-section" class="text-center">
+            <span class="tag-badge tag-all active" data-tag="ALL">All</span>
+        </div>
+
+        <!-- Post List -->
+        <div id="post-list"></div>
+
+        <!-- Post Detail (hidden by default) -->
+        <div id="post-detail" style="display:none;">
+            <button class="btn btn-outline-secondary back-btn" onclick="showList()">← Back to Posts</button>
+            <div id="post-content"></div>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="loading-spinner">
+            <p>Loading posts...</p>
+        </div>
+    </div>
+
+    <script>
+        let allPosts = [];
+        let allTags = new Set();
+        let activeTag = 'ALL';
+
+        // Parse frontmatter-like metadata from markdown
+        function parsePostMetadata(md) {
+            const meta = {};
+            const lines = md.split('\n');
+            let inMeta = false;
+            let contentStart = 0;
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line === '---' && i === 0) {
+                    inMeta = true;
+                    continue;
+                }
+                if (line === '---' && inMeta) {
+                    contentStart = i + 1;
+                    break;
+                }
+                if (inMeta) {
+                    const colonIdx = line.indexOf(':');
+                    if (colonIdx > 0) {
+                        const key = line.substring(0, colonIdx).trim();
+                        let val = line.substring(colonIdx + 1).trim();
+                        // Parse array: [tag1, tag2]
+                        if (val.startsWith('[') && val.endsWith(']')) {
+                            val = val.slice(1, -1).split(',').map(s => s.trim().replace(/^"(.*)"$/, '$1').replace(/^'(.*)'$/, '$1'));
+                        }
+                        meta[key] = val;
+                    }
+                }
+            }
+            meta._contentStart = contentStart;
+            meta._raw = md;
+            return meta;
+        }
+
+        function getPostContent(post) {
+            const lines = post._raw.split('\n');
+            return lines.slice(post._contentStart).join('\n');
+        }
+
+        async function loadPosts() {
+            try {
+                const resp = await fetch('posts.json');
+                const manifest = await resp.json();
+                allPosts = [];
+
+                for (const item of manifest) {
+                    const mdResp = await fetch(item.file);
+                    const mdText = await mdResp.text();
+                    const meta = parsePostMetadata(mdText);
+                    const post = {
+                        title: meta.title || item.title || 'Untitled',
+                        date: meta.date || item.date || '',
+                        tags: Array.isArray(meta.tags) ? meta.tags : 
+                              (meta.tags ? [meta.tags] : (item.tags || [])),
+                        file: item.file,
+                        _raw: mdText,
+                        _contentStart: meta._contentStart
+                    };
+                    post.tags.forEach(t => allTags.add(t));
+                    allPosts.push(post);
+                }
+
+                // Sort by date descending
+                allPosts.sort((a, b) => b.date.localeCompare(a.date));
+
+                renderTags();
+                renderPosts();
+                document.getElementById('loading').style.display = 'none';
+
+                // Check URL hash for tag filter
+                const hash = window.location.hash.slice(1);
+                if (hash) {
+                    if (hash.startsWith('post-')) {
+                        const idx = parseInt(hash.replace('post-', ''));
+                        if (!isNaN(idx) && idx < allPosts.length) {
+                            showPost(idx);
+                            return;
+                        }
+                    }
+                    const tag = decodeURIComponent(hash);
+                    if (allTags.has(tag)) {
+                        filterByTag(tag);
+                    }
+                }
+            } catch (err) {
+                document.getElementById('loading').innerHTML = 
+                    '<p style="color:red;">Failed to load posts. Check console for details.</p>';
+                console.error('Blog load error:', err);
+            }
+        }
+
+        function renderTags() {
+            const section = document.getElementById('tags-section');
+            const sorted = [...allTags].sort();
+            sorted.forEach(tag => {
+                const span = document.createElement('span');
+                span.className = 'tag-badge';
+                span.dataset.tag = tag;
+                span.textContent = tag;
+                span.onclick = () => filterByTag(tag);
+                section.appendChild(span);
+            });
+        }
+
+        function renderPosts(filterTag = 'ALL') {
+            const list = document.getElementById('post-list');
+            list.innerHTML = '';
+            allPosts.forEach((post, idx) => {
+                if (filterTag !== 'ALL' && !post.tags.includes(filterTag)) {
+                    return;
+                }
+                const card = document.createElement('div');
+                card.className = 'post-card' + (filterTag !== 'ALL' && !post.tags.includes(filterTag) ? ' hidden' : '');
+                card.onclick = () => {
+                    showPost(idx);
+                    window.location.hash = 'post-' + idx;
+                };
+
+                const tagsHtml = post.tags.map(t => 
+                    `<span><span class="tag-dot"></span>${t}</span>`
+                ).join('');
+
+                card.innerHTML = `
+                    <h5>${post.title}</h5>
+                    <p class="post-date">📅 ${post.date}</p>
+                    <div class="post-tags">${tagsHtml}</div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function showPost(idx) {
+            const post = allPosts[idx];
+            document.getElementById('post-list').style.display = 'none';
+            document.getElementById('tags-section').style.display = 'none';
+            document.getElementById('post-detail').style.display = 'block';
+
+            const content = getPostContent(post);
+            document.getElementById('post-content').innerHTML = `
+                <h2>${post.title}</h2>
+                <p class="post-date">📅 ${post.date}</p>
+                <div class="post-tags" style="margin-bottom:1.5rem;">
+                    ${post.tags.map(t => `<span><span class="tag-dot"></span>${t}</span>`).join('')}
+                </div>
+                <hr>
+                <div class="markdown-body">${marked.parse(content)}</div>
+            `;
+
+            window.scrollTo(0, 0);
+        }
+
+        function showList() {
+            document.getElementById('post-list').style.display = 'block';
+            document.getElementById('tags-section').style.display = 'block';
+            document.getElementById('post-detail').style.display = 'none';
+            window.location.hash = activeTag === 'ALL' ? '' : activeTag;
+            window.scrollTo(0, 0);
+        }
+
+        function filterByTag(tag) {
+            activeTag = tag;
+            window.location.hash = tag === 'ALL' ? '' : tag;
+
+            // Update active tag badge
+            document.querySelectorAll('.tag-badge').forEach(b => {
+                b.classList.toggle('active', b.dataset.tag === tag || (tag === 'ALL' && b.dataset.tag === 'ALL'));
+            });
+
+            // Show/hide posts
+            allPosts.forEach((post, idx) => {
+                const cards = document.querySelectorAll('.post-card');
+                if (cards[idx]) {
+                    if (tag === 'ALL' || post.tags.includes(tag)) {
+                        cards[idx].classList.remove('hidden');
+                    } else {
+                        cards[idx].classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        // Init
+        loadPosts();
+    </script>
+</body>
+</html>

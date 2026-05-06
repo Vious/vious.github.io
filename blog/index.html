@@ -138,7 +138,7 @@
 
         <!-- Tag Filter -->
         <div id="tags-section" class="text-center">
-            <span class="tag-badge tag-all active" data-tag="ALL">All</span>
+            <span class="tag-badge tag-all active" data-tag="ALL" onclick="filterByTag('ALL')">All</span>
         </div>
 
         <!-- Post List -->
@@ -292,13 +292,14 @@
             });
         }
 
-        function showPost(idx) {
+        async function showPost(idx) {
             const post = allPosts[idx];
             document.getElementById('post-list').style.display = 'none';
             document.getElementById('tags-section').style.display = 'none';
             document.getElementById('post-detail').style.display = 'block';
 
             const content = getPostContent(post);
+            const rendered = await marked.parse(content);
             document.getElementById('post-content').innerHTML = `
                 <h2>${post.title}</h2>
                 <p class="post-date">📅 ${post.date}</p>
@@ -306,7 +307,7 @@
                     ${post.tags.map(t => `<span><span class="tag-dot"></span>${t}</span>`).join('')}
                 </div>
                 <hr>
-                <div class="markdown-body">${marked.parse(content)}</div>
+                <div class="markdown-body">${rendered}</div>
             `;
 
             window.scrollTo(0, 0);

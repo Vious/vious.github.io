@@ -10,5 +10,11 @@
         "date": "2026-05-01",
         "tags": ["AI", "Deep Learning", "tutorial"],
         "file": "posts/deep-learning-intro.md"
+    },
+    {
+        "title": "Just a test",
+        "date": "2026-05-06",
+        "tags": ["test"],
+        "file": "posts/just-a-test.md"
     }
 ]

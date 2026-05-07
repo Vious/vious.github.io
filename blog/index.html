@@ -1,384 +1,540 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Blog - Chaohao Xie</title>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Icon -->
-    <link href="../icons/hiDog.jpg" rel="my icon" type="image/x-icon">
-    <!-- StyleSheets -->
-    <link rel="stylesheet" href="../source/google-fonts.min.css">
-    <link rel="stylesheet" href="../source/bootstrap.min.css">
-    <link rel="stylesheet" href="../source/style.css">
+    <title>Blog — Chaohao Xie</title>
+    <link rel="stylesheet" href="css/github-markdown.min.css">
+    <link rel="stylesheet" href="css/github-markdown-light.css">
     <style>
+        :root {
+            --bg: #ffffff;
+            --text: #1f2328;
+            --text-secondary: #656d76;
+            --border: #d0d7de;
+            --tag-bg: #ddf4ff;
+            --tag-text: #0969da;
+            --tag-active-bg: #0969da;
+            --tag-active-text: #ffffff;
+            --card-bg: #ffffff;
+            --card-hover-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            --accent: #0969da;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+            background: #f6f8fa;
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ── Header ── */
         .blog-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 3rem 0;
-            margin-bottom: 2rem;
-            border-radius: 0 0 20px 20px;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+            background: rgba(255,255,255,0.92);
         }
-        .blog-header a {
-            color: rgba(255,255,255,0.85);
+        .blog-header-inner {
+            max-width: 860px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        .blog-header a:hover {
-            color: white;
+        .blog-header h1 {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--text);
         }
-        .tag-badge {
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin: 0.2rem;
-            padding: 0.4em 0.8em;
-            font-size: 0.85rem;
-            border-radius: 20px;
-            border: 1px solid #667eea;
-            color: #667eea;
-            background: transparent;
+        .blog-header h1 a {
+            text-decoration: none;
+            color: inherit;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.15s;
+        }
+        .back-link:hover { color: var(--accent); }
+        .back-link svg { width: 16px; height: 16px; }
+
+        /* ── Main Container ── */
+        .blog-container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 32px 24px 64px;
+        }
+
+        /* ── Tag Filter ── */
+        .tag-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 28px;
+        }
+        .tag-btn {
             display: inline-block;
-        }
-        .tag-badge:hover {
-            background: #667eea;
-            color: white;
-        }
-        .tag-badge.active {
-            background: #667eea;
-            color: white;
-        }
-        .tag-badge.tag-all {
-            border-color: #6c757d;
-            color: #6c757d;
-        }
-        .tag-badge.tag-all:hover,
-        .tag-badge.tag-all.active {
-            background: #6c757d;
-            color: white;
-        }
-        .post-card {
-            border: 1px solid #e8e8e8;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            transition: box-shadow 0.3s ease, transform 0.2s ease;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 500;
             cursor: pointer;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text-secondary);
+            transition: all 0.15s;
+            user-select: none;
+        }
+        .tag-btn:hover {
+            background: var(--tag-bg);
+            color: var(--tag-text);
+            border-color: var(--tag-text);
+        }
+        .tag-btn.active {
+            background: var(--tag-active-bg);
+            color: var(--tag-active-text);
+            border-color: var(--tag-active-bg);
+        }
+        .tag-count {
+            opacity: 0.65;
+            font-size: 0.75rem;
+            margin-left: 3px;
+        }
+
+        /* ── Post List ── */
+        .post-list { display: flex; flex-direction: column; gap: 14px; }
+        .post-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px 24px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
         }
         .post-card:hover {
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
+            box-shadow: var(--card-hover-shadow);
+            border-color: #b0b8c4;
+            transform: translateY(-1px);
         }
-        .post-card.hidden {
-            display: none;
+        .post-card-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+            line-height: 1.4;
         }
-        .post-date {
-            color: #999;
-            font-size: 0.9rem;
+        .post-card-meta {
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
         }
-        .post-tags {
-            margin-top: 0.5rem;
+        .post-card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
         }
-        .post-tags .tag-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 0.3rem;
-            background: #667eea;
-            vertical-align: middle;
-        }
-        .post-tags span {
-            margin-right: 0.8rem;
-            font-size: 0.85rem;
-            color: #667eea;
-        }
-        #post-content {
-            padding: 2rem;
-            background: #fff;
+        .post-card-tag {
+            font-size: 0.73rem;
+            padding: 2px 9px;
             border-radius: 12px;
-            border: 1px solid #eee;
-            min-height: 300px;
+            background: var(--tag-bg);
+            color: var(--tag-text);
+            font-weight: 500;
         }
-        #post-content img {
-            max-width: 100%;
-            border-radius: 8px;
+        .post-card-date {
+            white-space: nowrap;
         }
-        #post-content pre {
-            background: #f5f5f5;
-            padding: 1rem;
-            border-radius: 8px;
-            overflow-x: auto;
-        }
-        #post-content blockquote {
-            border-left: 4px solid #667eea;
-            padding-left: 1rem;
-            color: #666;
-        }
-        .back-btn {
-            margin-bottom: 1rem;
-        }
-        .loading-spinner {
+
+        .no-posts {
             text-align: center;
-            padding: 3rem;
-            color: #999;
+            padding: 48px 0;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
         }
-        #tags-section {
-            margin-bottom: 1.5rem;
+
+        /* ── Post Detail ── */
+        #post-detail { display: none; }
+        #post-detail.visible { display: block; }
+
+        .post-detail-header {
+            margin-bottom: 28px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .post-detail-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 14px;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        .post-detail-back:hover { text-decoration: underline; }
+        .post-detail-back svg { width: 16px; height: 16px; }
+
+        .post-detail-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+        .post-detail-meta {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+        .post-detail-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .post-detail-tag {
+            font-size: 0.75rem;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: var(--tag-bg);
+            color: var(--tag-text);
+            font-weight: 500;
+        }
+
+        .post-detail-content {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 36px 40px;
+        }
+
+        /* ── Loading / Error ── */
+        .loading {
+            text-align: center;
+            padding: 60px 0;
+            color: var(--text-secondary);
+        }
+        .loading .spinner {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .error-msg {
+            text-align: center;
+            padding: 48px 0;
+            color: #cf222e;
+            font-size: 0.95rem;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 640px) {
+            .blog-header { padding: 12px 16px; }
+            .blog-container { padding: 20px 16px 40px; }
+            .post-card { padding: 16px 18px; }
+            .post-detail-content { padding: 20px 18px; }
+            .post-detail-title { font-size: 1.4rem; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="blog-header text-center">
-            <h1>📝 Vious12138's Blog</h1>
-            <p>Thoughts, notes & ideas</p>
-            <!-- <a href="./posts/welcome.md">Just a test post →</a><br> -->
+    <!-- ── Header ── -->
+    <header class="blog-header">
+        <div class="blog-header-inner">
+            <h1><a href="index.html">📝 Chaohao's Blog</a></h1>
+            <a class="back-link" href="../">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5m7-7-7 7 7 7"/>
+                </svg>
+                Home
+            </a>
         </div>
+    </header>
 
+    <!-- ── Main ── -->
+    <main class="blog-container">
         <!-- Tag Filter -->
-        <div id="tags-section" class="text-center">
-            <span class="tag-badge tag-all active" data-tag="ALL" onclick="filterByTag('ALL')">All</span>
+        <div class="tag-filter" id="tag-filter"></div>
+
+        <!-- Post List View -->
+        <div id="post-list-view">
+            <div class="post-list" id="post-list"></div>
+            <div class="no-posts" id="no-posts" style="display:none;">No posts found for this tag.</div>
         </div>
 
-        <!-- Post List -->
-        <div id="post-list"></div>
-
-        <!-- Post Detail (hidden by default) -->
-        <div id="post-detail" style="display:none;">
-            <button class="btn btn-outline-secondary back-btn" onclick="showList()">← Back to Posts</button>
-            <div id="post-content"></div>
+        <!-- Post Detail View -->
+        <div id="post-detail">
+            <div class="post-detail-header">
+                <button class="post-detail-back" id="btn-back">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5m7-7-7 7 7 7"/>
+                    </svg>
+                    Back to posts
+                </button>
+                <h2 class="post-detail-title" id="detail-title"></h2>
+                <div class="post-detail-meta">
+                    <span id="detail-date"></span>
+                    <span class="post-detail-tags" id="detail-tags"></span>
+                </div>
+            </div>
+            <div class="post-detail-content markdown-body" id="detail-content"></div>
         </div>
+    </main>
 
-        <!-- Loading -->
-        <div id="loading" class="loading-spinner">
-            <p>Loading posts...</p>
-        </div>
-    </div>
+    <!-- highlight.js (regular script, sets global hljs) -->
+    <script src="js/highlight.min.js"></script>
 
-    <script>
-        // ===== Simple Markdown → HTML Renderer (no external dependencies) =====
-        function renderMarkdown(md) {
-            // Escape HTML in the source first (except what we'll generate)
-            let html = md
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;');
+    <!-- Main blog logic (ES module, imports marked) -->
+    <script type="module">
+        import { marked } from './js/marked.esm.js';
 
-            // Code blocks (``` ... ```) — must be done before inline code
-            html = html.replace(/```(\w*)\n([\s\S]*?)```/g, function(_, lang, code) {
-                // unescape inside code blocks
-                code = code.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-                return '<pre><code>' + code + '</code></pre>';
+        // ── State ──
+        let posts = [];
+        let activeTag = null;   // null = show all
+
+        // ── DOM refs ──
+        const tagFilter = document.getElementById('tag-filter');
+        const postList = document.getElementById('post-list');
+        const noPosts = document.getElementById('no-posts');
+        const postListView = document.getElementById('post-list-view');
+        const postDetail = document.getElementById('post-detail');
+        const detailTitle = document.getElementById('detail-title');
+        const detailDate = document.getElementById('detail-date');
+        const detailTags = document.getElementById('detail-tags');
+        const detailContent = document.getElementById('detail-content');
+        const btnBack = document.getElementById('btn-back');
+
+        // ── Helpers ──
+        function formatDate(dateStr) {
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('en-US', {
+                year: 'numeric', month: 'long', day: 'numeric'
             });
-
-            // Inline code (`...`)
-            html = html.replace(/`([^`]+)`/g, function(_, code) {
-                code = code.replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-                return '<code>' + code + '</code>';
-            });
-
-            // Headers (must be after code blocks)
-            html = html.replace(/^#### (.+)$/gm, '<h4>$1</h4>');
-            html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-            html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-            html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
-
-            // Bold & Italic
-            html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
-            html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-            html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
-
-            // Images ![alt](url)
-            html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
-
-            // Links [text](url)
-            html = html.replace(/\[([^\]]*)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
-
-            // Horizontal rules
-            html = html.replace(/^---$/gm, '<hr>');
-
-            // Blockquotes
-            html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
-            // Merge adjacent blockquotes
-            html = html.replace(/<\/blockquote>\n<blockquote>/g, '\n');
-
-            // Unordered lists
-            html = html.replace(/^[\*\-] (.+)$/gm, '<li>$1</li>');
-            html = html.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
-
-            // Ordered lists
-            html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
-            // Avoid double-wrapping
-            html = html.replace(/<ul>(\s*<li>.*<\/li>\s*)+<\/ul>/g, function(m) { return m; });
-
-            // Paragraphs: lines that aren't already wrapped in a block tag
-            html = html.replace(/^(?!<(h[1-4]|ul|ol|li|pre|blockquote|hr|img|table|thead|tbody|tr|th|td))(.+)$/gm, '<p>$2</p>');
-
-            // Clean up empty paragraphs
-            html = html.replace(/<p>\s*<\/p>/g, '');
-
-            return html;
         }
 
-        // ===== Blog Logic =====
-        let allPosts = [];
-        let allTags = new Set();
-        let activeTag = 'ALL';
-
-        function parsePostMetadata(md) {
-            const meta = {};
-            const lines = md.split('\n');
-            let inMeta = false;
-            let contentStart = 0;
-            for (let i = 0; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (line === '---' && i === 0) { inMeta = true; continue; }
-                if (line === '---' && inMeta) { contentStart = i + 1; break; }
-                if (inMeta) {
-                    const colonIdx = line.indexOf(':');
-                    if (colonIdx > 0) {
-                        const key = line.substring(0, colonIdx).trim();
-                        let val = line.substring(colonIdx + 1).trim();
-                        if (val.startsWith('[') && val.endsWith(']')) {
-                            val = val.slice(1, -1).split(',').map(s => s.trim().replace(/^["'](.*)["']$/, '$1'));
-                        }
-                        meta[key] = val;
-                    }
-                }
+        function stripFrontmatter(markdown) {
+            // Remove YAML frontmatter delimited by ---
+            const match = markdown.match(/^---\s*\n([\s\S]*?)\n---\s*\n/);
+            if (match) {
+                return markdown.slice(match[0].length);
             }
-            meta._contentStart = contentStart;
-            meta._raw = md;
-            return meta;
+            return markdown;
         }
 
-        function getPostContent(post) {
-            const lines = post._raw.split('\n');
-            return lines.slice(post._contentStart).join('\n');
+        // ── Build Tag Filter ──
+        function buildTagFilter() {
+            const tagCounts = {};
+            posts.forEach(p => {
+                (p.tags || []).forEach(t => {
+                    tagCounts[t] = (tagCounts[t] || 0) + 1;
+                });
+            });
+
+            const allTags = Object.keys(tagCounts).sort((a, b) =>
+                a.toLowerCase().localeCompare(b.toLowerCase())
+            );
+
+            let html = `<button class="tag-btn${activeTag === null ? ' active' : ''}"
+                data-tag="">All<span class="tag-count">(${posts.length})</span></button>`;
+
+            allTags.forEach(tag => {
+                const active = activeTag === tag ? ' active' : '';
+                html += `<button class="tag-btn${active}" data-tag="${escapeHtml(tag)}">
+                    ${escapeHtml(tag)}<span class="tag-count">(${tagCounts[tag]})</span>
+                </button>`;
+            });
+
+            tagFilter.innerHTML = html;
+
+            // Click handlers
+            tagFilter.querySelectorAll('.tag-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tag = btn.dataset.tag;
+                    activeTag = tag || null;
+                    buildTagFilter();
+                    renderPostList();
+                });
+            });
         }
 
-        async function loadPosts() {
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ── Render Post List ──
+        function renderPostList() {
+            const filtered = activeTag
+                ? posts.filter(p => (p.tags || []).includes(activeTag))
+                : posts;
+
+            if (filtered.length === 0) {
+                postList.innerHTML = '';
+                noPosts.style.display = 'block';
+            } else {
+                noPosts.style.display = 'none';
+                postList.innerHTML = filtered.map((p, i) => `
+                    <a class="post-card" href="javascript:void(0)" data-index="${i}" data-file="${escapeHtml(p.file)}">
+                        <div class="post-card-title">${escapeHtml(p.title)}</div>
+                        <div class="post-card-meta">
+                            <span class="post-card-date">${formatDate(p.date)}</span>
+                            <span class="post-card-tags">
+                                ${(p.tags || []).map(t =>
+                                    `<span class="post-card-tag">${escapeHtml(t)}</span>`
+                                ).join('')}
+                            </span>
+                        </div>
+                    </a>
+                `).join('');
+
+                // Click handlers for post cards
+                postList.querySelectorAll('.post-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const file = card.dataset.file;
+                        const post = posts.find(p => p.file === file);
+                        if (post) showPostDetail(post);
+                    });
+                });
+            }
+        }
+
+        // ── Show Post Detail ──
+        async function showPostDetail(post) {
+            postListView.style.display = 'none';
+            postDetail.classList.add('visible');
+
+            detailTitle.textContent = post.title;
+            detailDate.textContent = formatDate(post.date);
+            detailTags.innerHTML = (post.tags || []).map(t =>
+                `<span class="post-detail-tag">${escapeHtml(t)}</span>`
+            ).join('');
+
+            detailContent.innerHTML = '<div class="loading"><div class="spinner"></div><p style="margin-top:12px;">Loading post…</p></div>';
+
             try {
-                const resp = await fetch('posts.json');
-                const manifest = await resp.json();
-                allPosts = [];
+                const resp = await fetch(post.file);
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                let md = await resp.text();
 
-                for (const item of manifest) {
-                    const mdResp = await fetch(item.file);
-                    const mdText = await mdResp.text();
-                    const meta = parsePostMetadata(mdText);
-                    const post = {
-                        title: meta.title || item.title || 'Untitled',
-                        date: meta.date || item.date || '',
-                        tags: Array.isArray(meta.tags) ? meta.tags :
-                              (meta.tags ? [meta.tags] : (item.tags || [])),
-                        file: item.file,
-                        _raw: mdText,
-                        _contentStart: meta._contentStart
-                    };
-                    post.tags.forEach(t => allTags.add(t));
-                    allPosts.push(post);
-                }
+                // Strip YAML frontmatter
+                md = stripFrontmatter(md);
 
-                allPosts.sort((a, b) => b.date.localeCompare(a.date));
-                renderTags();
-                renderPosts();
-                document.getElementById('loading').style.display = 'none';
+                // Parse markdown
+                const html = marked.parse(md);
+                detailContent.innerHTML = html;
 
-                const hash = window.location.hash.slice(1);
-                if (hash) {
-                    if (hash.startsWith('post-')) {
-                        const idx = parseInt(hash.replace('post-', ''));
-                        if (!isNaN(idx) && idx < allPosts.length) { showPost(idx); return; }
-                    }
-                    if (allTags.has(decodeURIComponent(hash))) { filterByTag(decodeURIComponent(hash)); }
+                // Apply syntax highlighting
+                if (typeof hljs !== 'undefined') {
+                    detailContent.querySelectorAll('pre code').forEach(block => {
+                        hljs.highlightElement(block);
+                    });
                 }
             } catch (err) {
-                document.getElementById('loading').innerHTML =
-                    '<p style="color:red;">Failed to load posts: ' + err.message + '</p>';
-                console.error('Blog load error:', err);
+                detailContent.innerHTML =
+                    `<div class="error-msg">Failed to load post: ${escapeHtml(err.message)}</div>`;
             }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function renderTags() {
-            const section = document.getElementById('tags-section');
-            [...allTags].sort().forEach(tag => {
-                const span = document.createElement('span');
-                span.className = 'tag-badge';
-                span.dataset.tag = tag;
-                span.textContent = tag;
-                span.onclick = () => filterByTag(tag);
-                section.appendChild(span);
+        // ── Go Back to List ──
+        function showPostList() {
+            postDetail.classList.remove('visible');
+            postListView.style.display = '';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        btnBack.addEventListener('click', showPostList);
+
+        // Handle browser back button for post detail
+        window.addEventListener('popstate', (e) => {
+            if (e.state && e.state.post) {
+                const post = posts.find(p => p.file === e.state.post);
+                if (post) showPostDetailSilent(post);
+            } else {
+                showPostListSilent();
+            }
+        });
+
+        function showPostDetailSilent(post) {
+            showPostDetail(post).then(() => {
+                // Already pushed state, just render
             });
         }
 
-        function renderPosts(filterTag) {
-            filterTag = filterTag || 'ALL';
-            const list = document.getElementById('post-list');
-            list.innerHTML = '';
-            allPosts.forEach((post, idx) => {
-                if (filterTag !== 'ALL' && !post.tags.includes(filterTag)) return;
-                const card = document.createElement('div');
-                card.className = 'post-card';
-                card.onclick = function() { showPost(idx); window.location.hash = 'post-' + idx; };
-                card.innerHTML =
-                    '<h5>' + post.title + '</h5>' +
-                    '<p class="post-date">📅 ' + post.date + '</p>' +
-                    '<div class="post-tags">' +
-                        post.tags.map(function(t) { return '<span><span class="tag-dot"></span>' + t + '</span>'; }).join('') +
-                    '</div>';
-                list.appendChild(card);
-            });
+        function showPostListSilent() {
+            postDetail.classList.remove('visible');
+            postListView.style.display = '';
         }
 
-        function showPost(idx) {
-            var post = allPosts[idx];
-            document.getElementById('post-list').style.display = 'none';
-            document.getElementById('tags-section').style.display = 'none';
-            document.getElementById('post-detail').style.display = 'block';
+        // Override showPostDetail to push history state
+        const origShowPostDetail = showPostDetail;
+        showPostDetail = async function(post) {
+            history.pushState({ post: post.file }, post.title, `?post=${encodeURIComponent(post.file)}`);
+            return origShowPostDetail(post);
+        };
 
-            var content = getPostContent(post);
-            var rendered;
+        // ── Init ──
+        async function init() {
             try {
-                rendered = renderMarkdown(content);
-            } catch (e) {
-                rendered = '<p style="color:red;">Render error: ' + e.message + '</p><pre>' + content.replace(/</g,'&lt;') + '</pre>';
-                console.error(e);
-            }
+                const resp = await fetch('posts.json');
+                if (!resp.ok) throw new Error(`Failed to load posts.json (HTTP ${resp.status})`);
+                posts = await resp.json();
 
-            document.getElementById('post-content').innerHTML =
-                '<h2>' + post.title + '</h2>' +
-                '<p class="post-date">📅 ' + post.date + '</p>' +
-                '<div class="post-tags" style="margin-bottom:1.5rem;">' +
-                    post.tags.map(function(t) { return '<span><span class="tag-dot"></span>' + t + '</span>'; }).join('') +
-                '</div>' +
-                '<hr>' +
-                '<div class="markdown-body">' + rendered + '</div>';
+                // Sort by date descending (newest first)
+                posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-            window.scrollTo(0, 0);
-        }
+                buildTagFilter();
+                renderPostList();
 
-        function showList() {
-            document.getElementById('post-list').style.display = 'block';
-            document.getElementById('tags-section').style.display = 'block';
-            document.getElementById('post-detail').style.display = 'none';
-            window.location.hash = activeTag === 'ALL' ? '' : activeTag;
-            window.scrollTo(0, 0);
-        }
-
-        function filterByTag(tag) {
-            activeTag = tag;
-            window.location.hash = tag === 'ALL' ? '' : tag;
-            document.querySelectorAll('.tag-badge').forEach(function(b) {
-                b.classList.toggle('active', b.dataset.tag === tag || (tag === 'ALL' && b.dataset.tag === 'ALL'));
-            });
-            allPosts.forEach(function(post, idx) {
-                var cards = document.querySelectorAll('.post-card');
-                if (cards[idx]) {
-                    cards[idx].style.display = (tag === 'ALL' || post.tags.includes(tag)) ? '' : 'none';
+                // Check URL for direct post link
+                const params = new URLSearchParams(window.location.search);
+                const postFile = params.get('post');
+                if (postFile) {
+                    const post = posts.find(p => p.file === postFile);
+                    if (post) {
+                        history.replaceState({ post: postFile }, post.title, `?post=${encodeURIComponent(postFile)}`);
+                        showPostDetail(post);
+                    }
                 }
-            });
+            } catch (err) {
+                postList.innerHTML =
+                    `<div class="error-msg">Failed to load blog: ${escapeHtml(err.message)}</div>`;
+                console.error('Blog init error:', err);
+            }
         }
 
-        loadPosts();
+        init();
     </script>
 </body>
 </html>

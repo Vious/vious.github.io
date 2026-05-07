@@ -1,20 +1,26 @@
 [
     {
+        "title": "How to Use & Maintain This Blog",
+        "date": "2026-05-07",
+        "tags": ["meta", "guide", "tutorial"],
+        "file": "posts/how-to-use-this-blog.md"
+    },
+    {
         "title": "Just a test",
         "date": "2026-05-06",
         "tags": ["test"],
-        "file": "./posts/just-a-test.md"
+        "file": "posts/just-a-test.md"
     },
     {
         "title": "Welcome to My Blog",
         "date": "2026-05-06",
         "tags": ["meta", "guide"],
-        "file": "./posts/welcome.md"
+        "file": "posts/welcome.md"
     },
     {
         "title": "Getting Started with Deep Learning",
         "date": "2026-05-01",
         "tags": ["AI", "Deep Learning", "tutorial"],
-        "file": "./posts/deep-learning-intro.md"
+        "file": "posts/deep-learning-intro.md"
     }
 ]

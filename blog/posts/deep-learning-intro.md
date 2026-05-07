@@ -1,5 +1,5 @@
 ---
-title: Just A testing
+title: Getting Started with Deep Learning
 date: 2026-05-01
 tags: [AI, Deep Learning, tutorial]
 ---

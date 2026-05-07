@@ -379,6 +379,8 @@
                 btn.addEventListener('click', () => {
                     const tag = btn.dataset.tag;
                     activeTag = tag || null;
+                    // Always switch back to list view when filtering by tag
+                    showPostList();
                     buildTagFilter();
                     renderPostList();
                 });
@@ -471,6 +473,10 @@
         function showPostList() {
             postDetail.classList.remove('visible');
             postListView.style.display = '';
+            // Clean up URL (no post parameter when in list view)
+            const url = new URL(window.location);
+            url.searchParams.delete('post');
+            history.replaceState(null, '', url.pathname + (url.search || ''));
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 

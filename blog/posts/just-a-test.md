@@ -1,7 +1,7 @@
 ---
 title: Just a test
 date: 2026-05-06
-tags: [test]
+tags: [test，测试]
 ---
 
 ## Nothing
